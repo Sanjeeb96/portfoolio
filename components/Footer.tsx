@@ -27,7 +27,13 @@ const Footer = () => {
     <footer className="flex items-center justify-start flex-col lg:px-20 py-6 px-5 w-full gap-20 bg-light-white">
       <div className="flex flex-col gap-12 w-full">
         <div className="flex items-start flex-col">
-          <Image src="/logo2.png " alt="logo" width={115} height={38} />
+          <Image
+            src="/logo2.png "
+            alt="logo"
+            width={115}
+            height={38}
+            priority={!!true}
+          />
 
           <p className="text-start text-sm font-light mt-5 max-w-xs">
             Flexibble is the world&apos;s leading community for creatives to

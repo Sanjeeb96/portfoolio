@@ -11,7 +11,13 @@ const Navbar = () => {
         {/* Main logo of the site */}
 
         <Link href="/">
-          <Image src="/logo2.png" width={115} height={43} alt="Portfoolio" />
+          <Image
+            src="/logo2.png"
+            width={115}
+            height={43}
+            alt="Portfoolio"
+            priority={!!true}
+          />
         </Link>
 
         {/* Navbar Links through Map function */}
