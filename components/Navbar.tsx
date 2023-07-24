@@ -2,9 +2,10 @@ import { NavLinks } from "@/constants";
 import Image from "next/image";
 import Link from "next/link";
 import AuthProviders from "./AuthProviders";
+import { getCurrentUser } from "@/lib/session";
 
-const Navbar = () => {
-  const session = {};
+const Navbar = async () => {
+  const session = await getCurrentUser();
   return (
     <nav className="flex justify-between items-center py-5 px-8 border-b border-nav-border gap-4">
       <div className="flex items-center justify-start flex-1 gap-10">
@@ -34,9 +35,18 @@ const Navbar = () => {
       {/* User Detail & Authantication */}
 
       <div className="flex items-center justify-center gap-4">
-        {session ? (
+        {session?.user ? (
           <>
-            UserPhoto
+            {/* rounded image avatar */}
+            {session?.user?.image && (
+              <Image
+                src={session.user.image}
+                width={40}
+                height={40}
+                className="rounded-full "
+                alt={session.user.name}
+              />
+            )}
             <Link href="/create-project">share Work</Link>
           </>
         ) : (
