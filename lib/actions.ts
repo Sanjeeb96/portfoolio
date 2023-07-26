@@ -1,3 +1,4 @@
+import { ProjectForm } from "@/common.types";
 import { createUserMutation, getUserQuery } from "@/graphql";
 import { GraphQLClient } from "graphql-request";
 
@@ -18,10 +19,10 @@ const serverUrl = isProduction
 
 const client = new GraphQLClient(apiUrl);
 
-const makeGraphQLRequest = async (query: string, variable = {}) => {
+const makeGraphQLRequest = async (query: string, variables = {}) => {
   try {
     // client request
-    return await client.request(query, variable);
+    return await client.request(query, variables);
   } catch (error) {
     throw error;
   }
@@ -32,14 +33,26 @@ export const getUser = (email: string) => {
   return makeGraphQLRequest(getUserQuery, { email });
 };
 
-export const createUser = (name: string, email: string, avaterUrl: string) => {
+export const createUser = (name: string, email: string, avatarUrl: string) => {
   client.setHeader("x-api-key", apiKey);
   const variables = {
     input: {
       name,
       email,
-      avaterUrl,
+      avatarUrl,
     },
   };
   return makeGraphQLRequest(createUserMutation, variables);
 };
+
+export const uploadImage = async (imagePath: string) => {
+  try {
+    const responce = await fetch(`${serverUrl}/api/upload`, {});
+  } catch (error) {}
+};
+
+export const createNewUser = async (
+  form: ProjectForm,
+  creatorId: string,
+  token: string
+) => {};

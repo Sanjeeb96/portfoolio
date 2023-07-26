@@ -23,6 +23,8 @@ const AuthProviders = () => {
     const fetchProviders = async () => {
       const res = await getProviders();
 
+      console.log(res);
+
       setProviders(res);
     };
 
@@ -33,14 +35,11 @@ const AuthProviders = () => {
     return (
       <div>
         {Object.values(providers).map((provider: Provider, i) => (
-          //   <Button
-          //     key={i}
-          //     title="Sign In"
-          //     handleClick={() => signIn(provider?.id)}
-          //   />
-          <button key={i} onClick={() => signIn(provider?.id)}>
-            {provider?.id}
-          </button>
+          <Button
+            key={i}
+            title="Sign In"
+            handleClick={() => signIn(provider?.id)}
+          />
         ))}
       </div>
     );

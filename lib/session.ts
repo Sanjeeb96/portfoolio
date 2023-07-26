@@ -79,7 +79,7 @@ export const authOptions: NextAuthOptions = {
             user.image as string
           );
         }
-        // return the user
+
         return true;
       } catch (error: any) {
         console.log("Error checking if user exists: ", error.message);
@@ -93,5 +93,6 @@ export const authOptions: NextAuthOptions = {
 
 export async function getCurrentUser() {
   const session = (await getServerSession(authOptions)) as SessionInterface;
+
   return session;
 }
