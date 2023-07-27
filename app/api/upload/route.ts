@@ -8,7 +8,7 @@ cloudinary.config({
 });
 
 export async function POST(request: Request) {
-  const path = await request.json();
+  const { path } = await request.json();
 
   if (!path) {
     return NextResponse.json(

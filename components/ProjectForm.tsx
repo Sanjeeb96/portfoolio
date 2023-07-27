@@ -8,7 +8,9 @@ import FormField from "./FormField";
 import { categoryFilters } from "@/constants";
 import CustomMenu from "./CustomMenu";
 import Button from "./Button";
-import { HiOutlinePlusCircle } from "react-icons/hi";
+
+import { createNewProject, fetchToken } from "@/lib/actions";
+import { useRouter } from "next/navigation";
 
 type ProjectFormProps = {
   type: string;
@@ -16,6 +18,8 @@ type ProjectFormProps = {
 };
 
 const ProjectForm = ({ type, session }: ProjectFormProps) => {
+  const router = useRouter();
+
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [form, setForm] = useState<FormState>({
     title: "",
@@ -26,10 +30,36 @@ const ProjectForm = ({ type, session }: ProjectFormProps) => {
     category: "",
   });
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     setSubmitting(true);
+
+    const { token } = await fetchToken();
+
+    try {
+      if (type === "create") {
+        await createNewProject(form, session?.user?.id, token);
+
+        router.push("/");
+        router.refresh();
+      }
+
+      // if (type === "edit") {
+      //   await updateProject(form, project?.id as string, token);
+
+      //   router.push("/");
+      //   router.refresh();
+      // }
+    } catch (error) {
+      alert(
+        `Failed to ${
+          type === "create" ? "create" : "edit"
+        } a project. Try again!`
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleChangeImage = (e: ChangeEvent<HTMLInputElement>) => {

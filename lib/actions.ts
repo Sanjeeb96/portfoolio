@@ -1,5 +1,10 @@
 import { ProjectForm } from "@/common.types";
-import { createUserMutation, getUserQuery } from "@/graphql";
+import {
+  createProjectMutation,
+  createUserMutation,
+  getUserQuery,
+  projectsQuery,
+} from "@/graphql";
 import { GraphQLClient } from "graphql-request";
 
 // To check if the stage is "development" or "production"
@@ -18,6 +23,30 @@ const serverUrl = isProduction
   : "http://localhost:3000";
 
 const client = new GraphQLClient(apiUrl);
+
+export const fetchToken = async () => {
+  try {
+    const response = await fetch(`${serverUrl}/api/auth/token`);
+    return response.json();
+  } catch (error) {
+    throw error;
+  }
+};
+
+// Connection to cloudinary & image upload
+
+export const uploadImage = async (imagePath: string) => {
+  try {
+    const responce = await fetch(`${serverUrl}/api/upload`, {
+      method: "POST",
+      body: JSON.stringify({ path: imagePath }),
+    });
+
+    return responce.json();
+  } catch (error) {
+    throw error;
+  }
+};
 
 const makeGraphQLRequest = async (query: string, variables = {}) => {
   try {
@@ -45,14 +74,37 @@ export const createUser = (name: string, email: string, avatarUrl: string) => {
   return makeGraphQLRequest(createUserMutation, variables);
 };
 
-export const uploadImage = async (imagePath: string) => {
-  try {
-    const responce = await fetch(`${serverUrl}/api/upload`, {});
-  } catch (error) {}
+export const fetchAllProjects = (
+  category?: string | null,
+  endcursor?: string | null
+) => {
+  client.setHeader("x-api-key", apiKey);
+
+  return makeGraphQLRequest(projectsQuery, { category, endcursor });
 };
 
-export const createNewUser = async (
+// Creation of new project with form, creator Id & token.
+
+export const createNewProject = async (
   form: ProjectForm,
   creatorId: string,
   token: string
-) => {};
+) => {
+  const imageUrl = await uploadImage(form.image);
+
+  if (imageUrl.url) {
+    client.setHeader("Authorization", `Bearer ${token}`);
+
+    const variables = {
+      input: {
+        ...form,
+        image: imageUrl.url,
+        createdBy: {
+          link: creatorId,
+        },
+      },
+    };
+
+    return makeGraphQLRequest(createProjectMutation, variables);
+  }
+};
