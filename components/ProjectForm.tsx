@@ -3,31 +3,32 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import Image from "next/image";
 
-import { FormState, SessionInterface } from "@/common.types";
+import { FormState, ProjectInterface, SessionInterface } from "@/common.types";
 import FormField from "./FormField";
 import { categoryFilters } from "@/constants";
 import CustomMenu from "./CustomMenu";
 import Button from "./Button";
 
-import { createNewProject, fetchToken } from "@/lib/actions";
+import { createNewProject, fetchToken, updateProject } from "@/lib/actions";
 import { useRouter } from "next/navigation";
 
 type ProjectFormProps = {
   type: string;
   session: SessionInterface;
+  project?: ProjectInterface;
 };
 
-const ProjectForm = ({ type, session }: ProjectFormProps) => {
+const ProjectForm = ({ type, session, project }: ProjectFormProps) => {
   const router = useRouter();
 
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [form, setForm] = useState<FormState>({
-    title: "",
-    description: "",
-    image: "",
-    liveSiteUrl: "",
-    githubUrl: "",
-    category: "",
+    title: project?.title || "",
+    description: project?.description || "",
+    image: project?.image || "",
+    liveSiteUrl: project?.liveSiteUrl || "",
+    githubUrl: project?.githubUrl || "",
+    category: project?.category || "",
   });
 
   const handleFormSubmit = async (e: React.FormEvent) => {
@@ -45,12 +46,12 @@ const ProjectForm = ({ type, session }: ProjectFormProps) => {
         router.refresh();
       }
 
-      // if (type === "edit") {
-      //   await updateProject(form, project?.id as string, token);
+      if (type === "edit") {
+        await updateProject(form, project?.id as string, token);
 
-      //   router.push("/");
-      //   router.refresh();
-      // }
+        router.push("/");
+        router.refresh();
+      }
     } catch (error) {
       alert(
         `Failed to ${
@@ -154,7 +155,7 @@ const ProjectForm = ({ type, session }: ProjectFormProps) => {
         setState={(value) => handleStateChange("category", value)}
       />
 
-      <div className="flexStart w-full">
+      <div className="flexStart w-full ">
         <Button
           title={
             submitting
@@ -162,7 +163,7 @@ const ProjectForm = ({ type, session }: ProjectFormProps) => {
               : `${type === "create" ? "Create" : "Edit"}`
           }
           type="submit"
-          leftIcon={submitting ? "" : " /plus.svg"}
+          leftIcon={submitting ? "" : "/plus.svg"}
           submitting={submitting}
         />
       </div>
