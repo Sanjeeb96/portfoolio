@@ -10,8 +10,8 @@ const Categories = () => {
 
   const category = searchParams.get("category");
 
-  const handleTags = (filter: string) => {
-    router.push(`${pathname}?category=${filter}`);
+  const handleTags = (item: string) => {
+    router.push(`${pathname}?category=${item}`);
   };
 
   return (
