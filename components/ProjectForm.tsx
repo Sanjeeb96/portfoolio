@@ -2,6 +2,7 @@
 
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import { FormState, ProjectInterface, SessionInterface } from "@/common.types";
 import FormField from "./FormField";
@@ -10,7 +11,6 @@ import CustomMenu from "./CustomMenu";
 import Button from "./Button";
 
 import { createNewProject, fetchToken, updateProject } from "@/lib/actions";
-import { useRouter } from "next/navigation";
 
 type ProjectFormProps = {
   type: string;
@@ -31,7 +31,7 @@ const ProjectForm = ({ type, session, project }: ProjectFormProps) => {
     category: project?.category || "",
   });
 
-  const handleFormSubmit = async (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     setSubmitting(true);
@@ -71,7 +71,9 @@ const ProjectForm = ({ type, session, project }: ProjectFormProps) => {
     if (!file) return;
 
     if (!file.type.includes("image")) {
-      return alert("Please upload an Image file.");
+      alert("Please upload an Image file.");
+
+      return;
     }
 
     const reader = new FileReader();
@@ -85,8 +87,8 @@ const ProjectForm = ({ type, session, project }: ProjectFormProps) => {
     };
   };
 
-  const handleStateChange = (fieldName: string, value: string) => {
-    setForm((prevState) => ({ ...prevState, [fieldName]: value }));
+  const handleStateChange = (fieldName: keyof FormState, value: string) => {
+    setForm((prevForm) => ({ ...prevForm, [fieldName]: value }));
   };
 
   return (

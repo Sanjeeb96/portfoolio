@@ -1,3 +1,5 @@
+import { GraphQLClient } from "graphql-request";
+
 import { ProjectForm } from "@/common.types";
 import {
   createProjectMutation,
@@ -9,7 +11,6 @@ import {
   projectsQuery,
   updateProjectMutation,
 } from "@/graphql";
-import { GraphQLClient } from "graphql-request";
 
 // To check if the stage is "development" or "production"
 const isProduction = process.env.NODE_ENV === "production";
@@ -70,13 +71,15 @@ export const createUser = (name: string, email: string, avatarUrl: string) => {
   client.setHeader("x-api-key", apiKey);
   const variables = {
     input: {
-      name,
-      email,
-      avatarUrl,
+      name: name,
+      email: email,
+      avatarUrl: avatarUrl,
     },
   };
   return makeGraphQLRequest(createUserMutation, variables);
 };
+
+// fetch all the projects acc to category
 
 export const fetchAllProjects = (
   category?: string | null,

@@ -2,25 +2,22 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { NavLinks } from "@/constants";
-import AuthProviders from "@/components/AuthProviders";
 import { getCurrentUser } from "@/lib/session";
+
+import AuthProviders from "@/components/AuthProviders";
 import ProfileMenu from "@/components/ProfileMenu";
+import Button from "./Button";
 
 const Navbar = async () => {
   const session = await getCurrentUser();
+
   return (
     <nav className="flex justify-between items-center py-5 px-8 border-b border-nav-border gap-4">
       <div className="flex items-center justify-start flex-1 gap-10">
         {/* Main logo of the site */}
 
         <Link href="/">
-          <Image
-            src="/logo2.png"
-            width={115}
-            height={43}
-            alt="Portfoolio"
-            priority={!!true}
-          />
+          <Image src="/logo2.png" width={115} height={43} alt="Portfoolio" />
         </Link>
 
         {/* Navbar Links through Map function */}
@@ -41,7 +38,9 @@ const Navbar = async () => {
           <>
             <ProfileMenu session={session} />
 
-            <Link href="/create-project">share Work</Link>
+            <Link href="/create-project">
+              <Button title="Share work" />
+            </Link>
           </>
         ) : (
           <AuthProviders />
